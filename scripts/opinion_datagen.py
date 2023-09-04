@@ -1,4 +1,6 @@
+import os
 import sys
+import copy
 import argparse
 import networkx as nx
 from NNetwork import NNetwork as nn
@@ -45,7 +47,17 @@ parser.add_argument(
     type=str,
     help="Directory to store generated data",
 )
+parser.add_argument(
+    "-seed",
+    "--seed",
+    default=0,
+    type=int,
+    help="Set reproducibility seed",
+)
 args = parser.parse_args()
+
+# Set seed
+set_seed(args.seed)
 
 # Lookup table for Dynamics and Width
 widthTable = {"HK": widthOD}
@@ -79,3 +91,43 @@ G_nn.add_edges(edgelist)
 X, embs = G_nn.get_patches(k=args.samplek, sample_size=sample_size, skip_folded_hom=True)
 X = X.T
 print("Finished MCMC Sampling...")
+
+final_tensor = []
+
+for row in X:
+    A_new = row.reshape(args.samplek, args.samplek)
+    G_new = nx.from_numpy_array(A_new)
+
+    if args.model == "HK":
+        s = np.random.rand(G_new.number_of_nodes())
+        op_eps = np.random.rand()
+        max_rounds = 24
+        label = False
+        dynamics = hk_local(A_new, s, op_eps, max_rounds, eps=1e-7, conv_stop=False)
+        if ((np.max(dynamics[-1]) - np.min(dynamics[-1])) < 1e-3) or (np.std(dynamics[-1]) < 1e-3):
+            label = True
+
+    else:
+        raise NotImplementedError(f"{args.model} is not yet supported.")
+
+    tensor = []
+    for color in dynamics:
+        adj_mat = copy.deepcopy(A_new)
+
+        for j in range(args.samplek - 1):
+            for k in range(j):
+                if adj_mat[j, k] > 0 and widthTable["HK"]([color[j], color[k]]) < op_eps:
+                    adj_mat[j, k] = widthTable["HK"]([color[j], color[k]])
+                else:
+                    adj_mat[j, k] = 0
+        adj_mat += adj_mat.T
+        tensor.append(
+            adj_mat.reshape(
+                args.samplek**2,
+            )
+        )
+    final_tensor.append(np.array(tensor))
+
+final_tensor = np.array(final_tensor)
+
+np.save(os.path.join(args.data_dir, args_path(args)), final_tensor)
