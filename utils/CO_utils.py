@@ -60,7 +60,6 @@ def widthFCA(coloring, kappa=5):
     return np.min(differences)
 
 
-# Kuramoto Dynamics
 def Kuramoto(G, K, s, iteration, step=0.01):
     """Implements the Kuramoto model for coupled oscillators
     Args:
