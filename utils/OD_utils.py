@@ -66,3 +66,13 @@ def hk_local(A, s, op_eps, max_rounds, eps=1e-6, conv_stop=True):
             break
 
     return opinions[0 : t + 1, :]
+
+
+def widthOD(colors):
+    """_summary_
+    Args:
+        colors (list): List of opinion dynamics vector profile at a certain iteration
+    Returns:
+        float: Width of the Hegselmann-Krause opinion dynamics
+    """
+    return np.abs(np.max(colors) - np.min(colors))
