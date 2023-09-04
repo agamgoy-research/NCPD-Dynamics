@@ -1,6 +1,9 @@
+import sys
 import argparse
 import networkx as nx
 from NNetwork import NNetwork as nn
+
+sys.path.insert(0, "/home/agoyal25/NCPD-Dynamics")
 from utils.helper import *
 from utils.CO_utils import *
 from utils.OD_utils import *
@@ -53,7 +56,6 @@ widthTable = {"HK": widthOD}
 num_nodes, probability, auxiliary, sample_size = 450, 0.25, 10, 2500
 sampling_alg = "pivot"
 
-counterSync, counterNonsync = 0, 0
 subgraphs = []
 
 # Large graph generation
@@ -76,7 +78,6 @@ for i in range(len(new_edges)):
 G_nn = nn.NNetwork()
 G_nn.add_edges(edgelist)
 
-print("Now starting MCMC Sampling...")
 X, embs = G_nn.get_patches(k=args.samplek, sample_size=sample_size, skip_folded_hom=True)
 X = X.T
-print("Now done with MCMC Sampling...")
+print("Finished MCMC Sampling...")
