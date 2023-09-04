@@ -4,9 +4,7 @@ import networkx as nx
 from NNetwork import NNetwork as nn
 
 sys.path.insert(0, "/home/agoyal25/NCPD-Dynamics")
-from utils.helper import *
-from utils.CO_utils import *
-from utils.OD_utils import *
+from utils import *
 
 # Build argument parser
 parser = argparse.ArgumentParser(description="Argument Parser for Opion Dynamics Tensor Generation")
