@@ -11,13 +11,6 @@ from utils import *
 # Build argument parser
 parser = argparse.ArgumentParser(description="Argument Parser for Opion Dynamics Tensor Generation")
 parser.add_argument(
-    "-N",
-    "--N",
-    default=500,
-    type=int,
-    help="Number of parents from which 50 subgraphs each were sampled",
-)
-parser.add_argument(
     "-m",
     "--model",
     default="HK",
@@ -130,4 +123,4 @@ for row in X:
 final_tensor = np.array(final_tensor)
 
 os.makedirs(args.data_dir)
-np.save(os.path.join(args.data_dir, args_path(args)), final_tensor)
+np.save(os.path.join(args.data_dir, args_path(args, num_nodes, sample_size)), final_tensor)

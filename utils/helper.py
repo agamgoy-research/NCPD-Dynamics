@@ -8,10 +8,9 @@ def set_seed(seed):
         seed (int): Reproducibility seed to use for the experiments
     """
     np.random.seed(seed)
-    random.seed(seed)
 
 
-def args_path(args):
+def args_path(args, num_nodes, sample_size):
     """Determines save path for data tensors
 
     Args:
@@ -20,4 +19,4 @@ def args_path(args):
     Returns:
         str: Output path for saving data
     """
-    return f"Model_{args.model}_Network_{args.network}_SampleK_{str(args.samplek)}_Seed_{args.seed}"
+    return f"Model_{args.model}_Network_{args.network}_SampleK_{str(args.samplek)}_ParentNodes_{num_nodes}_NumSamples_{sample_size}_Seed_{args.seed}"
