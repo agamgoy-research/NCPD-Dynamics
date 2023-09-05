@@ -56,7 +56,7 @@ set_seed(args.seed)
 widthTable = {"HK": widthOD}
 
 # Dynamics Model and Graph Statistics
-num_nodes, probability, auxiliary, sample_size = 450, 0.25, 10, 2500
+num_nodes, probability, auxiliary, sample_size = 300, 0.25, 10, 2500
 sampling_alg = "pivot"
 
 # Large graph generation
