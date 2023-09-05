@@ -100,6 +100,7 @@ for row in X:
         edgelist.append(temp)
     G = nn.NNetwork()
     G.add_edges(edgelist)
+    num_nodes = G.num_nodes()
 
     if args.model == "FCA":
         s = np.random.randint(0, 5, num_nodes)
