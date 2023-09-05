@@ -69,7 +69,7 @@ def hk_local(A, s, op_eps, max_rounds, eps=1e-6, conv_stop=True):
 
 
 def widthOD(colors):
-    """_summary_
+    """Calculate the width of the opinion dynamics profile
     Args:
         colors (list): List of opinion dynamics vector profile at a certain iteration
     Returns:
