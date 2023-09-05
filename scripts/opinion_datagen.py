@@ -122,5 +122,6 @@ for row in X:
 
 final_tensor = np.array(final_tensor)
 
-os.makedirs(args.data_dir)
+if not os.path.exists(args.data_dir):
+    os.makedirs(args.data_dir)
 np.save(os.path.join(args.data_dir, args_path(args, num_nodes, sample_size)), final_tensor)
