@@ -66,8 +66,6 @@ widthTable = {"HK": widthOD}
 num_nodes, probability, auxiliary, sample_size = 450, 0.25, 10, 2500
 sampling_alg = "pivot"
 
-subgraphs = []
-
 # Large graph generation
 if args.network == "NWS":
     G_net = nx.newman_watts_strogatz_graph(num_nodes, auxiliary, probability)
@@ -92,8 +90,8 @@ X, embs = G_nn.get_patches(k=args.samplek, sample_size=sample_size, skip_folded_
 X = X.T
 print("Finished MCMC Sampling...")
 
+# Create main tensor
 final_tensor = []
-
 for row in X:
     A_new = row.reshape(args.samplek, args.samplek)
     G_new = nx.from_numpy_array(A_new)
@@ -110,6 +108,7 @@ for row in X:
     else:
         raise NotImplementedError(f"{args.model} is not yet supported.")
 
+    # Create individual CCATs
     tensor = []
     for color in dynamics:
         adj_mat = copy.deepcopy(A_new)
@@ -130,4 +129,5 @@ for row in X:
 
 final_tensor = np.array(final_tensor)
 
+os.makedirs(args.data_dir)
 np.save(os.path.join(args.data_dir, args_path(args)), final_tensor)
