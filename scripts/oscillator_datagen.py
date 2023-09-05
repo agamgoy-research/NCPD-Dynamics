@@ -55,7 +55,8 @@ args = parser.parse_args()
 set_seed(args.seed)
 
 # Lookup table for Dynamics and Width
-widthTable = {"HK": widthOD}
+widthTable = {"FCA": widthFCA, "KURA": widthKURA}
+phiTable = {"FCA": FCA, "KURA": Kuramoto}
 
 # Dynamics Model and Graph Statistics
 num_nodes, probability, auxiliary, sample_size = 300, 0.25, 10, 2500
@@ -91,15 +92,22 @@ for row in X:
     A_new = row.reshape(args.samplek, args.samplek)
     G_new = nx.from_numpy_array(A_new)
 
-    if args.model == "HK":
-        s = np.random.rand(G_new.number_of_nodes())
-        op_eps = np.random.rand()
-        max_rounds = 24
-        label = False
-        dynamics = hk_local(A_new, s, op_eps, max_rounds, eps=1e-7, conv_stop=False)
-        if ((np.max(dynamics[-1]) - np.min(dynamics[-1])) < 1e-3) or (np.std(dynamics[-1]) < 1e-3):
-            label = True
+    new_nodes = {e: n for n, e in enumerate(G_new.nodes, start=1)}
+    new_edges = [(new_nodes[e1], new_nodes[e2]) for e1, e2 in G_new.edges]
+    edgelist = []
+    for i in range(len(new_edges)):
+        temp = [str(new_edges[i][0]), str(new_edges[i][1])]
+        edgelist.append(temp)
+    G = nn.NNetwork()
+    G.add_edges(edgelist)
 
+    if args.model == "FCA":
+        s = np.random.randint(0, 5, num_nodes)
+        kappa = 5
+        dynamics, label = phiTable[args.model](G, s, kappa, iteration=50)
+    elif args.model == "KURA":
+        s = np.random.uniform(-np.pi, np.pi, num_nodes)
+        dynamics, label = phiTable[args.model](G, s=s, K=1, iteration=100)
     else:
         raise NotImplementedError(f"{args.model} is not yet supported.")
 
@@ -110,10 +118,8 @@ for row in X:
 
         for j in range(args.samplek - 1):
             for k in range(j):
-                if adj_mat[j, k] > 0 and widthTable["HK"]([color[j], color[k]]) < op_eps:
-                    adj_mat[j, k] = widthTable["HK"]([color[j], color[k]])
-                else:
-                    adj_mat[j, k] = 0
+                if adj_mat[j, k] > 0:
+                    adj_mat[j, k] = widthTable[args.model]([color[j], color[k]])
         adj_mat += adj_mat.T
         tensor.append(
             adj_mat.reshape(
