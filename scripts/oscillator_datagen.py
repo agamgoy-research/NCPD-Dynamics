@@ -100,14 +100,14 @@ for row in X:
         edgelist.append(temp)
     G = nn.NNetwork()
     G.add_edges(edgelist)
-    num_nodes = G.num_nodes()
+    num_nodes_new = G.num_nodes()
 
     if args.model == "FCA":
-        s = np.random.randint(0, 5, num_nodes)
+        s = np.random.randint(0, 5, num_nodes_new)
         kappa = 5
         dynamics, label = phiTable[args.model](G, s, kappa, iteration=50)
     elif args.model == "KURA":
-        s = np.random.uniform(-np.pi, np.pi, num_nodes)
+        s = np.random.uniform(-np.pi, np.pi, num_nodes_new)
         dynamics, label = phiTable[args.model](G, s=s, K=1, iteration=100)
     else:
         raise NotImplementedError(f"{args.model} is not yet supported.")
