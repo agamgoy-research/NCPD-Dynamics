@@ -6,9 +6,12 @@ import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
+import warnings
 
 sys.path.insert(0, "/home/agoyal25/NCPD-Dynamics")
 from utils import *
+
+warnings.filterwarnings("ignore")
 
 # Build argument parser
 parser = argparse.ArgumentParser(description="Argument Parser for Plotting Scripts")
@@ -75,7 +78,6 @@ def plot_CP(temporal_factors, graph_factors, R, retrieve_path):
     for i in range(rows):
         for j in range(columns):
             idx = 3 * i + (i + j)
-            print(idx)
 
             histogram = temporal_factors[:, idx].reshape(-1, 1).T
             k = int(np.sqrt(graph_factors[:, idx].shape[0]))
