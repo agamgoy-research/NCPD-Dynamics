@@ -59,7 +59,7 @@ widthTable = {"FCA": widthFCA, "KURA": widthKURA}
 phiTable = {"FCA": FCA, "KURA": Kuramoto}
 
 # Dynamics Model and Graph Statistics
-num_nodes, probability, auxiliary, sample_size = 300, 0.25, 10, 2500
+num_nodes, probability, auxiliary, sample_size = 450, 0.25, 10, 2500
 sampling_alg = "pivot"
 
 # Large graph generation
@@ -117,10 +117,12 @@ for row in X:
     for color in dynamics:
         adj_mat = copy.deepcopy(A_new)
 
-        for j in range(args.samplek - 1):
+        for j in range(args.samplek):
             for k in range(j):
                 if adj_mat[j, k] > 0:
                     adj_mat[j, k] = widthTable[args.model]([color[j], color[k]])
+
+        adj_mat *= np.tri(*adj_mat.shape)
         adj_mat += adj_mat.T
         tensor.append(
             adj_mat.reshape(
