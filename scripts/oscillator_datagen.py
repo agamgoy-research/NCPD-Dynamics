@@ -5,7 +5,7 @@ import argparse
 import networkx as nx
 from NNetwork import NNetwork as nn
 
-sys.path.insert(0, "..")
+sys.path.insert(0, "/home/agoyal25/NCPD-Dynamics/")
 from utils import *
 
 # Build argument parser
@@ -133,6 +133,13 @@ for row in X:
 
 final_tensor = np.array(final_tensor)
 
-if not os.path.exists(args.data_dir):
-    os.makedirs(args.data_dir)
-np.save(os.path.join(args.data_dir, args_path(args, num_nodes, sample_size)), final_tensor)
+save_path = os.path.join(args.data_dir, args_path(args, num_nodes, sample_size))
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
+np.save(
+    os.path.join(
+        save_path,
+        args_path(args, num_nodes, sample_size),
+    ),
+    final_tensor,
+)
