@@ -97,7 +97,7 @@ for i in range(len(graph_factors)):
 
 ## Need to redirect to plotting scripts
 save_path = os.path.join(args.data_dir, key)
-with open(os.path.join(key, "graph_factors.pkl"), "wb") as f:
+with open(os.path.join(save_path, "graph_factors.pkl"), "wb") as f:
     pickle.dump(graph_factors, f)
-with open(os.path.join(key, "temporal_factors.pkl"), "wb") as f:
+with open(os.path.join(save_path, "temporal_factors.pkl"), "wb") as f:
     pickle.dump(temporal_factors, f)
