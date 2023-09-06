@@ -5,7 +5,7 @@ import argparse
 import networkx as nx
 from NNetwork import NNetwork as nn
 
-sys.path.insert(0, "..")
+sys.path.insert(0, "/home/agoyal25/NCPD-Dynamics")
 from utils import *
 
 # Build argument parser
@@ -56,7 +56,7 @@ set_seed(args.seed)
 widthTable = {"HK": widthOD}
 
 # Dynamics Model and Graph Statistics
-num_nodes, probability, auxiliary, sample_size = 300, 0.25, 10, 2500
+num_nodes, probability, auxiliary, sample_size = 450, 0.25, 10, 2500
 sampling_alg = "pivot"
 
 # Large graph generation
@@ -106,12 +106,14 @@ for row in X:
     for color in dynamics:
         adj_mat = copy.deepcopy(A_new)
 
-        for j in range(args.samplek - 1):
+        for j in range(args.samplek):
             for k in range(j):
                 if adj_mat[j, k] > 0 and widthTable["HK"]([color[j], color[k]]) < op_eps:
                     adj_mat[j, k] = widthTable["HK"]([color[j], color[k]])
                 else:
                     adj_mat[j, k] = 0
+
+        adj_mat *= np.tri(*adj_mat.shape)
         adj_mat += adj_mat.T
         tensor.append(
             adj_mat.reshape(
@@ -122,6 +124,13 @@ for row in X:
 
 final_tensor = np.array(final_tensor)
 
-if not os.path.exists(args.data_dir):
-    os.makedirs(args.data_dir)
-np.save(os.path.join(args.data_dir, args_path(args, num_nodes, sample_size)), final_tensor)
+save_path = os.path.join(args.data_dir, args_path(args, num_nodes, sample_size))
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
+np.save(
+    os.path.join(
+        save_path,
+        args_path(args, num_nodes, sample_size),
+    ),
+    final_tensor,
+)

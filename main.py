@@ -1,8 +1,9 @@
 import os
-import numpy as np
+import pickle
 import argparse
-import tensorly as tl
+import numpy as np
 from utils import *
+import tensorly as tl
 from tensorly.decomposition import non_negative_parafac
 
 # Build argument parser
@@ -50,13 +51,14 @@ parser.add_argument(
 args = parser.parse_args()
 
 # Load tensor data
-num_nodes, sample_size = 300, 2500
-key = args_path(args, num_nodes, sample_size) + ".npy"
+num_nodes, sample_size = 450, 2500
+key = args_path(args, num_nodes, sample_size)
 tensor = tl.tensor(
     np.load(
         os.path.join(
             args.data_dir,
             key,
+            key + ".npy",
         )
     )
 )
@@ -94,3 +96,8 @@ for i in range(len(graph_factors)):
     graph_factors[i] /= scales
 
 ## Need to redirect to plotting scripts
+save_path = os.path.join(args.data_dir, key)
+with open(os.path.join(key, "graph_factors.pkl"), "wb") as f:
+    pickle.dump(graph_factors, f)
+with open(os.path.join(key, "temporal_factors.pkl"), "wb") as f:
+    pickle.dump(temporal_factors, f)
