@@ -5,7 +5,7 @@ import argparse
 import networkx as nx
 from NNetwork import NNetwork as nn
 
-sys.path.insert(0, "/home/agoyal25/NCPD-Dynamics/")
+sys.path.insert(0, "..")
 from utils import *
 
 # Build argument parser

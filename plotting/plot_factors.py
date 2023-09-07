@@ -8,7 +8,7 @@ import seaborn as sns
 import networkx as nx
 import warnings
 
-sys.path.insert(0, "/home/agoyal25/NCPD-Dynamics")
+sys.path.insert(0, "..")
 from utils import *
 
 warnings.filterwarnings("ignore")
